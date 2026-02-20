@@ -1,2 +1,0 @@
-#  Swift Test Project
-
