@@ -14,9 +14,9 @@ struct CustomCard: View {
     let iconProfession: String
     let profession: String
     let avatarImage: Image?
-    let avatarBackgroundRed: Double
-    let avatarBackgroundGreen: Double
-    let avatarBackgroundBlue: Double
+    let gradientStart: Color
+    let gradientEnd: Color
+    @State private var isAppearing = false
     
     init(
         name: String,
@@ -24,18 +24,16 @@ struct CustomCard: View {
         iconProfession: String,
         profession: String,
         avatarImage: Image? = nil,
-        avatarBackgroundRed: Double = 89,
-        avatarBackgroundGreen: Double = 165,
-        avatarBackgroundBlue: Double = 247
+        gradientStart: Color = Color(#colorLiteral(red: 0.1764705926, green: 0.01176470611, blue: 0.5607843399, alpha: 1)),
+        gradientEnd: Color = Color(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1))
     ) {
         self.name = name
         self.username = username
         self.iconProfession = iconProfession
         self.profession = profession
         self.avatarImage = avatarImage
-        self.avatarBackgroundRed = avatarBackgroundRed
-        self.avatarBackgroundGreen = avatarBackgroundGreen
-        self.avatarBackgroundBlue = avatarBackgroundBlue
+        self.gradientStart = gradientStart
+        self.gradientEnd = gradientEnd
     }
     
     var body: some View {
@@ -43,7 +41,7 @@ struct CustomCard: View {
             HStack (spacing: 20) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(Color(red: avatarBackgroundRed/255, green: avatarBackgroundGreen/255, blue: avatarBackgroundBlue/255))
+                        .fill(LinearGradient(colors: [gradientStart, gradientEnd], startPoint: .topLeading, endPoint: .bottom))
                     
                     Group {
                         if let avatarImage {
@@ -82,7 +80,9 @@ struct CustomCard: View {
                     
                 }
                 
+                
             }
+            
             
             
         }
@@ -91,6 +91,29 @@ struct CustomCard: View {
         .background(Color(red: 252/255, green: 252/255, blue: 252/255))
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .shadow(color: .black.opacity(0.2), radius: 20, y: 18)
+        // Estado inical
+        .opacity(isAppearing ? 1 : 0)
+        .offset(y: isAppearing ? 0 : 20)
+        // Trigger
+        .onAppear {
+            withAnimation(.easeInOut(duration: 0.6).delay(0.2)){
+                isAppearing = true
+            }
+        }
+        
+        
     }
+}
+
+#Preview {
+    CustomCard(
+        name: "Paulo Mantilla",
+        username: "@paulomanher",
+        iconProfession: "laptopcomputer",
+        profession: "Software Engineer",
+        avatarImage: Image("Avatar"),
+        gradientStart: Color(#colorLiteral(red: 0.1764705926, green: 0.01176470611, blue: 0.5607843399, alpha: 1)),
+        gradientEnd: Color(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1))
+    )
 }
 
